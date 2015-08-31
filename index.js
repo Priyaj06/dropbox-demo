@@ -24,7 +24,7 @@ if (NODE_ENV === 'development') {
 	app.use(morgan('dev'))
 }
 
-app.listen(PORT, ()=> console.log('Listening @ http://127.0.0.1:8000'))
+app.listen(PORT, ()=> console.log(`Listening @ http://127.0.0.1:8000`))
 
 app.get('*', setFilePath, sendHeaders, (req, res) => {
 	if(res.body) {
