@@ -16,9 +16,11 @@
     "chokidar": "^1.0.5",
     "express": "^4.13.3",
     "json-over-tcp": "^0.3.2",
+    "json-socket": "^0.1.2",
     "mime-types": "^2.1.5",
     "mkdirp": "^0.5.1",
     "morgan": "^1.6.1",
+    "process-nextick-args": "^1.0.2",
     "rimraf": "^2.4.3",
     "songbird": "^1.0.1",
     "yargs": "^3.22.2"
