@@ -115,30 +115,33 @@ function sendHeaders(req, res, next) {
 	}(), next)
 }
 
-// Create an TCP server
-var tcpServer = net.createServer()
-tcpServer.listen('8001')
-console.log('TCP server listening on port 8001')
-tcpServer.on('connection', function(socket) { 
-    console.log('client connected')
-    socket = new JsonSocket(socket); 
-    chokidar.watch('.', {ignored: /[\/\\]\./})
-        .on('all', (event, path) => {
-            console.log(event, path)
-            socket.sendMessage(getPayload(event, path))
-        })
+var clientPort = 8001,
+  jot = require('json-over-tcp');
 
-    socket.on('message', function (message) {
-        console.log('server on message')
-        console.log(message)
-        socket.sendMessage('payload')
-    })
-})
+var server = jot.createServer(clientPort);
+server.on('listening', createConnection);
+server.on('connection', newConnectionHandler);
 
-function getPayload(event, filepath) {
-    return {
-        "action": event,
-        "path": filepath,
-        "updated": new Date().getTime()
-    }
+// Triggered whenever something connects to the server 
+function newConnectionHandler(socket){
+  // Whenever a connection sends us an object... 
+  socket.on('data', function(data){
+		console.log(data)
+  });
+};
+ 
+// Creates one connection to the server when the server starts listening 
+function createConnection(){
+  // Start a connection to the server 
+  var socket = jot.connect(clientPort, function(){
+    // One-liner for current directory, ignores .dotfiles 
+	chokidar.watch('.', {ignored: /[\/\\]\./})
+	.on('all', (event, path) => {
+	    console.log('Event: ' +event + ', Path: '+ path)
+	})
+  });
+
 }
+ 
+// Start listening 
+server.listen(clientPort);
